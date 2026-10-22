@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Currency Converter</title>
+<style>
+body{
+    font-family:Arial;
+    text-align:center;
+    margin:100px;background:#f0f0f0}
+div{
+    background:white;
+    padding:25px;
+    display:inline-block;
+    border-radius:10px}
+input,select,button{
+    padding:10px;
+    margin:8px}
+button{
+    background:blue;
+    color:white;
+    border:0;
+    cursor:pointer}
+</style>
+</head>
+<body>
+<div>
+<h2>Currency Converter</h2>
+<input type="number" id="amount" placeholder="Enter amount" value="1"><br>
+
+<select id="from">
+    <option>USD</option>
+    <option>INR</option>
+    <option>EUR</option>  
+</select>
+
+<select id="to">
+    <option>INR</option>
+    <option>USD</option>
+    <option>EUR</option>
+</select><br>
+
+<button onclick="convert()">Convert</button>
+<h3 id="result"></h3>
+
+</div>
+<script>
+async function convert(){
+let a=document.getElementById("amount").value;
+let f=document.getElementById("from").value;
+let t=document.getElementById("to").value;
+let r=document.getElementById("result");
+if(a===""||Number(a)<0)
+{
+    r.innerText="Enter a valid amount";
+    return;
+}
+if(f===t)
+{
+    r.innerText=a+" "+f+" = "+a+" "+t;
+    return;
+}
+try{
+    let res=await fetch(`https://api.frankfurter.dev/v2/rate/${f}/${t}`);
+    if(!res.ok)
+        throw Error();
+    let data=await res.json();
+    r.innerText=(Number(a)*data.rate).toFixed(2)+" "+t;
+    }catch(e)
+    {
+        r.innerText="Conversion failed. Try again!";
+    }
+}
+</script>
+</body>
+</html>
